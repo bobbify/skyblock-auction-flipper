@@ -1,0 +1,8 @@
+{
+  "name":"auction-determiner",
+  "author": "Me",
+  "entry": "index.js",
+  "requires": ["requestV2"],
+  "version": "1.0.4",
+  "description": "auctions"
+}
