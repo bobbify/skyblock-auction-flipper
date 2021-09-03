@@ -33,14 +33,7 @@ register('command', auctionRoute)
 function auctionRoute() {
 
 try {
-
 	auc = auctions[it_no]
-	request({
-	    url: `https://api.slothpixel.me/api/players/${auc.seller}`,
-	    json: true,
-	})
-	    .then(function(response) {
-auc.seller = response.username
 try {
 ChatLib.clearChat(5050);
 ChatLib.clearChat(5051);
@@ -48,10 +41,10 @@ ChatLib.clearChat(5052);
 } catch(e) {
 
 }
-new Message(new TextComponent(`&l&f${auc.seller} &r| &l&1${auc.name} &r| &6Avg: $${numberWithCommas(auc.average_price)}&r| &6Price: $${numberWithCommas(auc.price)}`)).setChatLineId(5050).chat();
-new Message(new TextComponent("&l&2[To Auction] ").setClick("run_command", `/ah ${auc.seller}`)).setChatLineId(5051).chat();
+new Message(new TextComponent(`&l&f${auc.name} &r| &6Avg: $${numberWithCommas(auc.average_price)}&r| &6Price: $${numberWithCommas(auc.price)}`)).setChatLineId(5050).chat();
+new Message(new TextComponent("&l&2[To Auction] ").setClick("run_command", `/viewauction ${auc.seller}`)).setChatLineId(5051).chat();
 new Message(new TextComponent("&l&4[Next]").setClick("run_command", `/af`)).setChatLineId(5052).chat();
-			});
+
 it_no = Math.floor(Math.random() * auctions.length);
 }catch(e){
 	ChatLib.chat('No auctions in cache.')
