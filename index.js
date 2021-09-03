@@ -19,8 +19,9 @@ request({
         // will run
         auctions = response
 
-				ChatLib.chat('New auctions are in!')
-				it_no = 0
+				//ChatLib.chat('New auctions are in!')
+				//it_no = 0
+
     });
 }
 
@@ -51,7 +52,7 @@ new Message(new TextComponent(`&l&f${auc.seller} &r| &l&1${auc.name} &r| &6Avg: 
 new Message(new TextComponent("&l&2[To Auction] ").setClick("run_command", `/ah ${auc.seller}`)).setChatLineId(5051).chat();
 new Message(new TextComponent("&l&4[Next]").setClick("run_command", `/af`)).setChatLineId(5052).chat();
 			});
-it_no++
+it_no = Math.floor(Math.random() * auctions.length);
 }catch(e){
 	ChatLib.chat('No auctions in cache.')
 }
