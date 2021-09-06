@@ -1,8 +1,8 @@
 {
-  "name":"auction-flipper",
+  "name":"SkyblockAuctionFlipper",
   "author": "deandre#3930",
   "entry": "index.js",
   "requires": ["requestV2"],
-  "version": "1.0.4",
-  "description": "stuff."
+  "version": "0.0.2",
+  "description": "auction flipper for skyblock. /af to use"
 }
