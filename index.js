@@ -40,7 +40,7 @@ function ticker() {
 
 
   i++;
-  if (i > 600 && found === 0 && arrayContains("  Your Island",lines) && setting.getSetting("Main", "Enabled") === true) {
+  if (i > 600 && found === 0 && arrayContains("  BarackObama1961's Island",lines) && setting.getSetting("Main", "Enabled") === true) {
     i = 0;
     request({
       url: "https://auction-destroyer.herokuapp.com/",
@@ -93,7 +93,7 @@ register("command", changer).setName("af");
 
 
 function changer() {
-  if (arrayContains("  Your Island",lines)) {
+  if (arrayContains("  BarackObama1961's Island",lines)) {
   found = 0
 }else{
   ChatLib.chat('Limiting usage due to testing of new features, /visit BarackObama1961 in order to use the flipper.')
