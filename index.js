@@ -1,12 +1,46 @@
 import { request } from "../requestV2";
+
+
+import { Setting, SettingsObject } from "../SettingsManager/SettingsManager";
+
+var setting = new SettingsObject("SkyblockAuctionFlipper", [
+    {
+        name: "Main",
+        settings: [
+            new Setting.Toggle("Enabled", true),
+            new Setting.TextInput("Flip Minimum (currently disabled)", "0"),
+        ]
+    }
+]);
+
+setting.setCommand("afsettings").setSize(200, 20);
+Setting.register(setting);
+
+
+
+
+
+
 i = 0;
 it_no = 0;
 auctions = null;
+  lines = []
+found = 0
+  function arrayContains(needle, arrhaystack)
+  {
+      return (arrhaystack.indexOf(needle) > -1);
+  }
 
 register("tick", ticker);
 function ticker() {
+
+  Scoreboard.getLines().forEach((item, i) => {
+    lines.push(ChatLib.removeFormatting(item).replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, ''))
+  });
+
+
   i++;
-  if (i > 600 && found === 0) {
+  if (i > 600 && found === 0 && arrayContains("  Your Island",lines) && setting.getSetting("Main", "Enabled") === true) {
     i = 0;
     request({
       url: "https://auction-destroyer.herokuapp.com/",
@@ -22,6 +56,7 @@ function ticker() {
           ChatLib.clearChat(5051);
           ChatLib.clearChat(5052);
         } catch (e) {}
+        //if ((auc.average_price - auc.price) > parseInt(setting.getSetting("Main", "Flip Minimum").value)) {
         new Message(
           new TextComponent(
             `&l&f${auc.name} &r| &6Avg: $${numberWithCommas(
@@ -44,7 +79,9 @@ function ticker() {
           .chat();
 
         it_no = Math.floor(Math.random() * auctions.length);
-
+//}else{
+  //ChatLib.chat(parseInt(setting.getSetting("Main", "Flip Minimum").value))
+//}
       } catch (e) {
         //ChatLib.chat(response.toString());
       }
@@ -56,9 +93,15 @@ register("command", changer).setName("af");
 
 
 function changer() {
+  if (arrayContains("  Your Island",lines)) {
   found = 0
+}else{
+  ChatLib.chat('Limiting usage due to testing of new features, /visit BarackObama1961 in order to use the flipper.')
+}
+
 }
 function auctionRoute() {
+
   try {
     auc = auctions[it_no];
     try {
@@ -92,6 +135,7 @@ function auctionRoute() {
     ChatLib.chat('No Auction Flips Found');
   }
 }
+
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
