@@ -33,7 +33,7 @@ found = 0
 
 register("tick", ticker);
 function ticker() {
-
+lines = []
   Scoreboard.getLines().forEach((item, i) => {
     lines.push(ChatLib.removeFormatting(item).replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g, ''))
   });
@@ -42,6 +42,7 @@ function ticker() {
   i++;
   if (i > 600 && found === 0 && arrayContains("  BarackObama1961's Island",lines) && setting.getSetting("Main", "Enabled") === true) {
     i = 0;
+
     request({
       url: "https://auction-destroyer.herokuapp.com/",
       json: true,
