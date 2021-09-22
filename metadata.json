@@ -3,6 +3,6 @@
   "author": "deandre#3930",
   "entry": "index.js",
   "requires": ["SettingsManager", "requestV2"],
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "auction flipper for skyblock. /afsettings to enable/disable."
 }

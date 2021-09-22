@@ -71,6 +71,11 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
                     auctionRoute()
                 } catch (e) {}
             }),
+            new Setting.Button("", "&l&4[Previous]", function() {
+                try {
+                    auctionRoutep()
+                } catch (e) {}
+            }),
         ]
     },
     {
