@@ -14,7 +14,7 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
         name: "Information",
         settings: [
             new Setting.Button("&5&lFlip&d&lFlop", "", () => {}),
-            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.2.0", () => {}),
+            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.2.2", () => {}),
             new Setting.Button("&rThis mod is still in development.", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("If you have any issues you can contact me via discord:", "deandre#3930", () => {}),
@@ -94,8 +94,9 @@ Setting.register(setting);
 
 i = 0;
 it_no = 0;
+it_roll = 0
 auctions = null;
-prev_i = 0
+prev_i = []
 found = 0
 
 register("renderOverlay", myRenderOverlay);
@@ -117,7 +118,6 @@ function ticker() {
     if (parseInt(setting.getSetting("Settings", "Refresh Rate")) > 100) {
         rr = parseInt(setting.getSetting("Settings", "Refresh Rate"))
     }
-
     i++;
     if (i > rr && found === 0 && setting.getSetting("Settings", "Enable Mod") === true) {
         i = 0;
@@ -130,7 +130,9 @@ function ticker() {
             json: true,
             connectTimeout: 1000,
         }).then(function(response) {
+          if(response[0].name) {
             auctions = response;
+          }
             found = 1
             try {
                 auc = auctions[it_no];
@@ -158,6 +160,8 @@ function ticker() {
                     .chat();
 
                 it_no = Math.floor(Math.random() * auctions.length);
+                it_roll++
+                found = 0
             } catch (e) {
             }
         });
@@ -213,14 +217,14 @@ function auctionRoute() {
                     )
                     .setChatLineId(5053)
                     .chat();
-                prev_i = it_no
+                prev_i.push(it_no)
                 it_no = Math.floor(Math.random() * auctions.length);
         }
     } catch (e) {
         ChatLib.chat('No Auction Flips Found');
     }
 }
-register("command", auctionRoute).setName("afp");
+register("command", auctionRoutep).setName("afp");
 
 
 function changer() {
@@ -229,7 +233,7 @@ function changer() {
 
 function auctionRoutep() {
     try {
-        it_no = prev_i
+        it_no = prev_i[it_roll - 1]
         auc = auctions[it_no];
         if (auc.name) {
                 try {
@@ -270,8 +274,9 @@ function auctionRoutep() {
                     )
                     .setChatLineId(5053)
                     .chat();
-                prev_i = it_no
+                prev_i.push(it_no)
                 it_no = Math.floor(Math.random() * auctions.length);
+                it_roll = it_roll -1
         }
     } catch (e) {
         ChatLib.chat('No Auction Flips Found');
