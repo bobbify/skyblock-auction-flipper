@@ -14,7 +14,7 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
         name: "Information",
         settings: [
             new Setting.Button("&5&lFlip&d&lFlop", "", () => {}),
-            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.2.2", () => {}),
+            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.2.4", () => {}),
             new Setting.Button("&rThis mod is still in development.", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("If you have any issues you can contact me via discord:", "deandre#3930", () => {}),
@@ -140,15 +140,59 @@ function ticker() {
                     ChatLib.clearChat(5050);
                     ChatLib.clearChat(5051);
                 } catch (e) {}
+              //  ChatLib.chat(((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').join(' ').replace(/[^0-9A-Z]+/gi, '')))
+              //  if (!((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').join(' ').replace(/[^0-9A-Z]+/gi, '')) && !(auc.name.split('[')[1])) {
+              //    star = '✪'
+              //    auc.name = auc.name.replace(/[^0-9A-Z _]+/gi, '') + '&6&l' + star.repeat((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').length)
+              //  }
+                //make pet text in white
+                if (auc.rarity == 'SPECIAL') {
+                  auc.name = '&c'+ auc.name.split('SPECIAL')[0]
+                  auc.rarity = '&c&l' + auc.rarity
+                }
+                if (auc.rarity == 'MYTHIC') {
+                  auc.name = '&d'+ auc.name.split('MYTHIC')[0]
+                  auc.rarity = '&d&l' + auc.rarity
+                }
+                if (auc.rarity == 'LEGENDARY') {
+                  auc.name = '&6'+ auc.name.split('LEGENDARY')[0]
+                  auc.rarity = '&6&l' + auc.rarity
+                }
+                if (auc.rarity == 'EPIC') {
+                  auc.name = '&5'+ auc.name.split('EPIC')[0]
+                  auc.rarity = '&5&l' + auc.rarity
+                }
+                if (auc.rarity == 'RARE') {
+                  auc.name = '&9'+ auc.name.split('RARE')[0]
+                  auc.rarity = '&9&l' + auc.rarity
+                }
+                if (auc.rarity == 'UNCOMMON') {
+                  auc.name = '&2'+ auc.name.split('UNCOMMON')[0]
+                  auc.rarity = '&2&l' + auc.rarity
+                }
+                if (auc.rarity == 'COMMON') {
+                  auc.name = '&f'+ auc.name.split('COMMON')[0]
+                  auc.rarity = '&f&l' + auc.rarity
+                }
 
+                                new Message(
+                                  new TextComponent(
+                                      `&l&f${auc.name}`
+                    ).setHover("show_text", `${auc.name} \n \n&4&l MORE COMING SOON \n \n${auc.rarity}`),
+                                        new TextComponent(
+                                            `| &6Profit: $${numberWithCommas(
+                              auc.average_price - auc.price
+                            )}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${numberWithCommas(auc.average_price)} \n &r► &ePrice: &f$${numberWithCommas(auc.price)} \n &r► &eProfit: &a$${numberWithCommas(auc.average_price - auc.price)} \n\n&r&lAdditional Stats: \n&4&lCOMING SOON \n\n${riskCalc(auc.average_price, auc.price)}`)
+                                    )
+                                    .setChatLineId(5050)
+                                    .chat();
                 new Message(
-                        new TextComponent(
-                            `&l&f${auc.name} &r| &6Val: $${numberWithCommas(
-              auc.average_price
-            )}&r| &6Price: $${numberWithCommas(auc.price)}`
+                        new TextComponent("&l&2[To Auction] ").setClick(
+                            "run_command",
+                            `/viewauction ${auc.seller}`
                         )
                     )
-                    .setChatLineId(5050)
+                    .setChatLineId(5051)
                     .chat();
                 new Message(
                         new TextComponent("&l&2[To Auction] ").setClick(
@@ -177,6 +221,7 @@ function changer() {
 
 function auctionRoute() {
     try {
+
         auc = auctions[it_no];
         if (auc.name) {
                 try {
@@ -185,15 +230,54 @@ function auctionRoute() {
                     ChatLib.clearChat(5052);
                     ChatLib.clearChat(5053);
                 } catch (e) {}
-                new Message(
-                        new TextComponent(
-                            `&l&f${auc.name} &r| &6Val: $${numberWithCommas(
-          auc.average_price
-        )}&r| &6Price: $${numberWithCommas(auc.price)}`
-                        )
-                    )
-                    .setChatLineId(5050)
-                    .chat();
+              //  if (((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').join(' ').replace(/[^0-9A-Z]+/gi, '') == '')   ){// && !(auc.name.split('[')[1])) {
+                //  star = '✪'
+                //  ChatLib.chat(star)
+                //  ChatLib.chat(auc.name.split(' ')[auc.name.split(' ').length - 2].length)
+                //  ChatLib.chat(auc.name.replace(/[^0-9A-Z _]+/gi, ''))
+                //  auc.name = auc.name.replace(/[^0-9A-Z _]+/gi, '') + '&6&l' + star.repeat((auc.name.split(' ')[auc.name.split(' ').length - 2]).length)
+                //  ChatLib.chat(auc.name)
+              //  }
+                if (auc.rarity == 'SPECIAL') {
+                  auc.name = '&c'+ auc.name.split('SPECIAL')[0]
+                  auc.rarity = '&c&l' + auc.rarity
+                }
+                if (auc.rarity == 'MYTHIC') {
+                  auc.name = '&d'+ auc.name.split('MYTHIC')[0]
+                  auc.rarity = '&d&l' + auc.rarity
+                }
+                if (auc.rarity == 'LEGENDARY') {
+                  auc.name = '&6'+ auc.name.split('LEGENDARY')[0]
+                  auc.rarity = '&6&l' + auc.rarity
+                }
+                if (auc.rarity == 'EPIC') {
+                  auc.name = '&5'+ auc.name.split('EPIC')[0]
+                  auc.rarity = '&5&l' + auc.rarity
+                }
+                if (auc.rarity == 'RARE') {
+                  auc.name = '&9'+ auc.name.split('RARE')[0]
+                  auc.rarity = '&9&l' + auc.rarity
+                }
+                if (auc.rarity == 'UNCOMMON') {
+                  auc.name = '&2'+ auc.name.split('UNCOMMON')[0]
+                  auc.rarity = '&2&l' + auc.rarity
+                }
+                if (auc.rarity == 'COMMON') {
+                  auc.name = '&f'+ auc.name.split('COMMON')[0]
+                  auc.rarity = '&f&l' + auc.rarity
+                }
+
+                                new Message(
+                                  new TextComponent(
+                                      `&l&f${auc.name}`
+                    ).setHover("show_text", `${auc.name} \n \n&4&l MORE COMING SOON \n \n${auc.rarity}`),
+                                        new TextComponent(
+                                            `| &6Profit: $${numberWithCommas(
+                              auc.average_price - auc.price
+                            )}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${numberWithCommas(auc.average_price)} \n &r► &ePrice: &f$${numberWithCommas(auc.price)} \n &r► &eProfit: &a$${numberWithCommas(auc.average_price - auc.price)} \n\n&r&lAdditional Stats: \n&4&lCOMING SOON \n\n${riskCalc(auc.average_price, auc.price)}`)
+                                    )
+                                    .setChatLineId(5050)
+                                    .chat();
                 new Message(
                         new TextComponent("&l&2[To Auction] ").setClick(
                             "run_command",
@@ -242,14 +326,57 @@ function auctionRoutep() {
                     ChatLib.clearChat(5052);
                     ChatLib.clearChat(5053);
                 } catch (e) {}
+                //if (!((auc.name.split(' ')[auc.name.split(' ').length - 1]).split('').join(' ').replace(/[^0-9A-Z]+/gi, '')) && !(auc.name.split('[')[1])) {
+                //  star = '✪'
+                //  auc.name = auc.name.replace(/[^0-9A-Z _]+/gi, '') + '&6&l' + star.repeat((auc.name.split(' ')[auc.name.split(' ').length - 1]).split('').length)
+                //}
+                if (auc.rarity == 'SPECIAL') {
+                  auc.name = '&c'+ auc.name.split('SPECIAL')[0]
+                  auc.rarity = '&c&l' + auc.rarity
+                }
+                if (auc.rarity == 'MYTHIC') {
+                  auc.name = '&d'+ auc.name.split('MYTHIC')[0]
+                  auc.rarity = '&d&l' + auc.rarity
+                }
+                if (auc.rarity == 'LEGENDARY') {
+                  auc.name = '&6'+ auc.name.split('LEGENDARY')[0]
+                  auc.rarity = '&6&l' + auc.rarity
+                }
+                if (auc.rarity == 'EPIC') {
+                  auc.name = '&5'+ auc.name.split('EPIC')[0]
+                  auc.rarity = '&5&l' + auc.rarity
+                }
+                if (auc.rarity == 'RARE') {
+                  auc.name = '&9'+ auc.name.split('RARE')[0]
+                  auc.rarity = '&9&l' + auc.rarity
+                }
+                if (auc.rarity == 'UNCOMMON') {
+                  auc.name = '&2'+ auc.name.split('UNCOMMON')[0]
+                  auc.rarity = '&2&l' + auc.rarity
+                }
+                if (auc.rarity == 'COMMON') {
+                  auc.name = '&f'+ auc.name.split('COMMON')[0]
+                  auc.rarity = '&f&l' + auc.rarity
+                }
+
+                                new Message(
+                                  new TextComponent(
+                                      `&l&f${auc.name}`
+                    ).setHover("show_text", `${auc.name} \n \n&4&l MORE COMING SOON \n \n${auc.rarity}`),
+                                        new TextComponent(
+                                            `| &6Profit: $${numberWithCommas(
+                              auc.average_price - auc.price
+                            )}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${numberWithCommas(auc.average_price)} \n &r► &ePrice: &f$${numberWithCommas(auc.price)} \n &r► &eProfit: &a$${numberWithCommas(auc.average_price - auc.price)} \n\n&r&lAdditional Stats: \n&4&lCOMING SOON \n\n${riskCalc(auc.average_price, auc.price)}`)
+                                    )
+                                    .setChatLineId(5050)
+                                    .chat();
                 new Message(
-                        new TextComponent(
-                            `&l&f${auc.name} &r| &6Val: $${numberWithCommas(
-          auc.average_price
-        )}&r| &6Price: $${numberWithCommas(auc.price)}`
+                        new TextComponent("&l&2[To Auction] ").setClick(
+                            "run_command",
+                            `/viewauction ${auc.seller}`
                         )
                     )
-                    .setChatLineId(5050)
+                    .setChatLineId(5051)
                     .chat();
                 new Message(
                         new TextComponent("&l&2[To Auction] ").setClick(
@@ -285,4 +412,48 @@ function auctionRoutep() {
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+var emojiStringToArray = function (str) {
+  split = str.split(/([\uD800-\uDBFF][\uDC00-\uDFFF])/);
+  arr = [];
+  for (var i=0; i<split.length; i++) {
+    char = split[i]
+    if (char !== "") {
+      arr.push(char);
+    }
+  }
+  return arr;
+};
+
+function riskCalc(val, price) {
+  i = val / price
+  risk = '&l&f[&4▇▇▇▇▇▇▇▇▇▇&f]'
+  if (i < 0.1) {
+    risk = '&l&f[&4▇▇▇▇▇▇▇▇▇-&f]'
+  }
+  if (i < 0.2) {
+    risk = '&l&f[&4▇▇▇▇▇▇▇▇---&f]'
+  }
+  if (i < 0.3) {
+    risk = '&l&f[&6▇▇▇▇▇▇▇----&f]'
+  }
+  if (i < 0.4) {
+    risk = '&l&f[&6▇▇▇▇▇▇------&f]'
+  }
+  if (i < 0.5) {
+    risk = '&l&f[&6▇▇▇▇▇--------&f]'
+  }
+  if (i < 0.6) {
+    risk = '&l&f[&6▇▇▇▇---------&f]'
+  }
+  if (i < 0.7) {
+    risk = '&l&f[&a▇▇▇-----------&f]'
+  }
+  if (i < 0.8) {
+    risk = '&l&f[&a▇▇-------------&f]'
+  }
+  if (i < 0.9) {
+    risk = '&l&f[&a▇--------------&f]'
+  }
+  return `&f&lRISK METER: \n${risk}`
 }
