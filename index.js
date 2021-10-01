@@ -14,7 +14,7 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
         name: "Information",
         settings: [
             new Setting.Button("&5&lFlip&d&lFlop", "", () => {}),
-            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.3.0", () => {}),
+            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.3.1", () => {}),
             new Setting.Button("&rThis mod is still in development.", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("If you have any issues you can contact me via discord:", "deandre#3930", () => {}),
@@ -222,7 +222,7 @@ function ticker() {
           exclusionsettings = `true&item=${setting.getSetting("Exclusions", "Item")}&rarity=${setting.getSetting("Exclusions", "Rarity")}&enchants=${setting.getSetting("Exclusions", "Enchantments")}&reforges=${setting.getSetting("Exclusions", "Reforges")}`
         }
         request({
-            url: `http://localhost:3000/${setting.getSetting("Extras", "Key: (Don't touch this!)")}?Fmin=${setting.getSetting("Settings", "Flip Minimum")}&Fmax=${setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")}&exclusions=${exclusionsettings}`,
+            url: `https://auction-destroyer.herokuapp.com/${setting.getSetting("Extras", "Key: (Don't touch this!)")}?Fmin=${setting.getSetting("Settings", "Flip Minimum")}&Fmax=${setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")}&exclusions=${exclusionsettings}`,
             json: true,
             connectTimeout: 1000,
         }).then(function(response) {
