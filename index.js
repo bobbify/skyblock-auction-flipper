@@ -31,6 +31,8 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
             new Setting.TextInput("Refresh Rate", "600"),
             new Setting.TextInput("Flip Minimum", "0"),
             new Setting.TextInput("Item price maximum (don't change if you don't want a cap on price)", "1000000000000"),
+            new Setting.Toggle("Flip Warning", false),
+            new Setting.Toggle("Profit > Price Only:", false),
             new Setting.Button("", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("", "&4&lReset Settings", function() {
@@ -42,12 +44,8 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
     {
         name: "Exclusions",
         settings: [
-            new Setting.Button("&l(This feature is still in development and will not work yet)", "", () => {}),
-            new Setting.Toggle("Enable Exclusions", false),
-            new Setting.TextInput("Rarity", "Legendary"),
-            new Setting.TextInput("Item", "Aspect of the dragons"),
-            new Setting.TextInput("Reforges", "Fabled, Fierce"),
-            new Setting.TextInput("Enchantments", "Any"),
+            new Setting.Button("&l(This feature is still in development if you want another exclusion ask)", "", () => {}),
+            new Setting.Toggle("Exclude Recombobulated:", false),
             new Setting.Button("", "", () => {}),
 
         ]
@@ -86,10 +84,8 @@ setting.setCommand("afsettings").setSize(600, 200);
 Setting.register(setting);
 
 
-
-
 i = 0;
-it_no = 0;
+it_no = Math.floor(Math.random() * 100);
 it_roll = 0
 auctions = null;
 prev_i = []
@@ -151,13 +147,45 @@ function Chatmsg(auc, isaf) {
     auc.rarity = '&f&l' + auc.rarity
     auc.rarformat = '&f&l'
   }
-
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 function AdditionalInfo() {
   addition = ''
   if (auc.lore.includes('&k')) {
-    addition+= `&r► ${auc.rarformat}&kg&r${auc.rarformat}RARITY UPGRADED&kg`
+    addition+= `\n&r► ${auc.rarformat}&kg&r${auc.rarformat}RARITY UPGRADED&kg`
   }
-  return addition
+  if (auc.extra.modifier) {
+    addition+= `\n&r► ${capitalizeFirstLetter(auc.extra.modifier)} Reforge`
+  }
+  if (auc.extra.spider_kills) {
+    addition+= `\n&r► ${nFormatter(auc.extra.spider_kills)} Spider Kills`
+  }
+  if (auc.extra.zombie_kills) {
+    addition+= `\n&r► ${nFormatter(auc.extra.zombie_kills)} Zombie Kills`
+  }
+  if (auc.extra.hot_potato_count > 11) {
+    addition+= `\n&r► ${nFormatter(auc.extra.hot_potato_count)} Potato Books`
+  }
+  if (auc.extra.hot_potato_count < 10) {
+    addition+= `\n&r► ${nFormatter(auc.extra.hot_potato_count)}&♨ Potato Books`
+  }
+  if (auc.extra.dungeon_item_level) {
+    addition+= `\n&r► &4${nFormatter(auc.extra.dungeon_item_level)}&r Dungeon Stars`
+  }
+  if (auc.extra.compact_blocks) {
+    addition+= `\n&r► ${nFormatter(auc.extra.compact_blocks)} Blocks Mined`
+  }
+  if (auc.extra.ability_scroll) {
+    for (let step = 0; step < auc.extra.ability_scroll.length; step++) {
+    addition+= `\n&r► Ability Scroll: ${auc.extra.ability_scroll[step]}`
+  }
+  }
+
+  return addition + `\n\n&f&lEnchantments: \n&4&lCOMING SOON`
+}
+if(auc.amount > 1)  {
+  auc.name = auc.name + ' &f' + auc.amount + 'x'
 }
                   new Message(
                     new TextComponent(
@@ -166,7 +194,8 @@ function AdditionalInfo() {
                           new TextComponent(
                               `| &6Profit: $${nFormatter(
                 (auc.average_price - auc.price),1
-              )}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${nFormatter(auc.average_price,1)} \n &r► &ePrice: &f$${nFormatter(auc.price,1)} \n &r► &eTax: &f&4-$${nFormatter(auc.price/100,1)} \n &r► &eProfit: &a$${nFormatter((auc.average_price - auc.price) - (auc.price/100),1)} \n\n&r&lAdditional Stats: \n${AdditionalInfo()}\n\n${riskCalc(auc.average_price, auc.price)}`)
+              )} &f| &6Price: $${nFormatter(auc.price,1
+)}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${nFormatter(auc.average_price,1)} \n &r► &ePrice: &f$${nFormatter(auc.price,1)} \n &r► &eTax: &f&4-$${nFormatter(auc.price/100,1)} \n &r► &eProfit: &a$${nFormatter((auc.average_price - auc.price) - (auc.price/100),1)} \n\n&r&lAdditional Stats:${AdditionalInfo()}\n\n${riskCalc(auc.average_price, auc.price)}`)
                       )
                       .setChatLineId(5050)
                       .chat();
@@ -178,15 +207,20 @@ function AdditionalInfo() {
       )
       .setChatLineId(5051)
       .chat();
+if (isaf == false) {
   new Message(
-          new TextComponent("&l&2[To Auction] ").setClick(
-              "run_command",
-              `/viewauction ${auc.seller}`
-          )
-      )
-      .setChatLineId(5051)
-      .chat();
+  new TextComponent("&l&4[Next] ").setClick(
+      "run_command",
+      `/af`
+  )
+  ).setChatLineId(5052)
+  .chat();
 
+  if (setting.getSetting("Settings", "Flip Warning") == true) {
+    Client.showTitle('§lNew Auction', `§l§f${auc.name}`, 10, 10, 10)
+    World.playSound('mob.irongolem.hit', 100, 10)
+  }
+}
 if (isaf === true) {
 new Message(
 new TextComponent("&l&4[Next] ").setClick(
@@ -204,9 +238,7 @@ new Message(
 .setChatLineId(5053)
 .chat();
 }
-  it_no = Math.floor(Math.random() * auctions.length);
-  it_roll++
-  found = 0
+
 }
 function ticker() {
 
@@ -215,12 +247,9 @@ function ticker() {
         rr = parseInt(setting.getSetting("Settings", "Refresh Rate"))
     }
     i++;
-    if (i > rr && found === 0 && setting.getSetting("Settings", "Enable Mod") === true) {
+    if (i > rr && setting.getSetting("Settings", "Enable Mod") === true) {
         i = 0;
         exclusionsettings = 'false'
-        if (setting.getSetting("Exclusions", "Enable Exclusions") == true) {
-          exclusionsettings = `true&item=${setting.getSetting("Exclusions", "Item")}&rarity=${setting.getSetting("Exclusions", "Rarity")}&enchants=${setting.getSetting("Exclusions", "Enchantments")}&reforges=${setting.getSetting("Exclusions", "Reforges")}`
-        }
         request({
             url: `https://auction-destroyer.herokuapp.com/${setting.getSetting("Extras", "Key: (Don't touch this!)")}?Fmin=${setting.getSetting("Settings", "Flip Minimum")}&Fmax=${setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")}&exclusions=${exclusionsettings}`,
             json: true,
@@ -229,6 +258,7 @@ function ticker() {
           if(response[0].name) {
             auctions = response;
           }
+
             found = 1
             try {
                 auc = auctions[it_no];
@@ -245,6 +275,8 @@ function ticker() {
               //  }
                 //make pet text in white
 Chatmsg(auc, false)
+
+
             } catch (e) {
             }
         });
@@ -253,10 +285,28 @@ Chatmsg(auc, false)
 
 register("command", auctionRoute).setName("af");
 
+
 function auctionRoute() {
     try {
-
+      it_no = it_no+1
+      if (it_no > auctions.length) {
+        it_no = 0
+      }
         auc = auctions[it_no];
+        if ((auc.average_price - auc.price) < setting.getSetting("Settings", "Flip Minimum")) {
+          return auctionRoute()
+        }
+        if (auc.price > setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")) {
+          return auctionRoute()
+        }
+        if (setting.getSetting("Settings", "Profit > Price Only:") == true) {
+          if ((auc.average_price - auc.price) < auc.price) {
+          return auctionRoute()
+        }
+        }
+        if (setting.getSetting("Exclusions", "Exclude Recombobulated:") == true && auc.extra.rarity_upgrades == 1) {
+          return auctionRoute()
+        }
         if (auc.name) {
                 try {
                     ChatLib.clearChat(5050);
@@ -265,8 +315,6 @@ function auctionRoute() {
                     ChatLib.clearChat(5053);
                 } catch (e) {}
 Chatmsg(auc, true)
-                prev_i.push(it_no)
-                it_no = Math.floor(Math.random() * auctions.length);
         }
     } catch (e) {
         ChatLib.chat('No Auction Flips Found');
@@ -276,8 +324,26 @@ register("command", auctionRoutep).setName("afp");
 
 function auctionRoutep() {
     try {
-        it_no = prev_i[it_roll - 1]
+      it_no = it_no-1
+      if (it_no < 1) {
+        it_no = auctions.length
+      }
         auc = auctions[it_no];
+        if ((auc.average_price - auc.price) < setting.getSetting("Settings", "Flip Minimum")) {
+          return auctionRoutep()
+        }
+        if (auc.price > setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")) {
+          return auctionRoutep()
+        }
+        if (setting.getSetting("Settings", "Profit > Price Only:") == true) {
+          if ((auc.average_price - auc.price) < auc.price) {
+          return auctionRoutep()
+        }
+      }
+        if (setting.getSetting("Exclusions", "Exclude Recombobulated:") == true && auc.extra.rarity_upgrades == 1) {
+          return auctionRoutep()
+        }
+
         if (auc.name) {
                 try {
                     ChatLib.clearChat(5050);
@@ -286,9 +352,6 @@ function auctionRoutep() {
                     ChatLib.clearChat(5053);
                 } catch (e) {}
   Chatmsg(auc, true)
-                prev_i.push(it_no)
-                it_no = Math.floor(Math.random() * auctions.length);
-                it_roll = it_roll -1
         }
     } catch (e) {
         ChatLib.chat('No Auction Flips Found');
@@ -357,5 +420,5 @@ function riskCalc(val, price) {
   if (i > 0.9) {
     risk = '&l&f[&a▇--------------&f]'
   }
-  return `&f&lRISK METER: \n${risk}\n&8This is meant as an indication of if the flip\n&8has risk of losing money through.`
+  return `&f&lRISK METER: \n${risk}\n&8This is meant as an indication of if the flip\n&8has risk of losing money.`
 }
