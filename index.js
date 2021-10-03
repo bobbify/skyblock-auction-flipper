@@ -14,7 +14,7 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
         name: "Information",
         settings: [
             new Setting.Button("&5&lFlip&d&lFlop", "", () => {}),
-            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.3.1", () => {}),
+            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.4.1", () => {}),
             new Setting.Button("&rThis mod is still in development.", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("If you have any issues you can contact me via discord:", "deandre#3930", () => {}),
