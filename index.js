@@ -9,12 +9,15 @@ import {
     Setting,
     SettingsObject
 } from "../SettingsManager/SettingsManager";
+
+/*import FlipGui from "./gui.js";*/
+
 auc = NaN
-var setting = new SettingsObject("SkyblockAuctionFlipper", [{
+var flipsetting = new SettingsObject("SkyblockAuctionFlipper", [{
         name: "Information",
         settings: [
             new Setting.Button("&5&lFlip&d&lFlop", "", () => {}),
-            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.4.1", () => {}),
+            new Setting.Button("           &e&lSkyblockAuctionFlipper", "Ver 0.4.2", () => {}),
             new Setting.Button("&rThis mod is still in development.", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("If you have any issues you can contact me via discord:", "deandre#3930", () => {}),
@@ -29,15 +32,17 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
         settings: [
             new Setting.Toggle("Enable Mod", true),
             new Setting.TextInput("Refresh Rate", "600"),
-            new Setting.TextInput("Flip Minimum", "0"),
-            new Setting.TextInput("Item price maximum (don't change if you don't want a cap on price)", "1000000000000"),
-            new Setting.Toggle("Flip Warning", false),
+            new Setting.TextInput("Flip Minimum:", "0"),
+            new Setting.TextInput("Item Price Maximum:", "Max"),
+            new Setting.Toggle("Purse amount is Maximum:", false),
+            new Setting.Toggle("Flip Warning:", false),
             new Setting.Toggle("Profit > Price Only:", false),
             new Setting.Button("", "", () => {}),
             new Setting.Button("", "", () => {}),
             new Setting.Button("", "&4&lReset Settings", function() {
-                //setting.reset();
-                //setting.load();
+                /*flipsetting.reset();
+                flipsetting.load();
+                print('Pressed')*/
             })
         ]
     },
@@ -46,30 +51,9 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
         settings: [
             new Setting.Button("&l(This feature is still in development if you want another exclusion ask)", "", () => {}),
             new Setting.Toggle("Exclude Recombobulated:", false),
+            new Setting.TextInput("Exclude Keywords:", "Furnace+, Experimentation Table"),
             new Setting.Button("", "", () => {}),
 
-        ]
-    },
-    {
-        name: "Flip GUI",
-        settings: [
-            new Setting.Button("This feature is experimental, any feedback welcome.", "", () => {}),
-            new Setting.Toggle("Enabled", false),
-            new Setting.Button("", "&l&2[To Auction]", function() {
-                try {
-                    openAh()
-                } catch (e) {}
-            }),
-            new Setting.Button("", "&l&4[Next]", function() {
-                try {
-                    auctionRoute()
-                } catch (e) {}
-            }),
-            new Setting.Button("", "&l&4[Previous]", function() {
-                try {
-                    auctionRoutep()
-                } catch (e) {}
-            }),
         ]
     },
     {
@@ -80,8 +64,8 @@ var setting = new SettingsObject("SkyblockAuctionFlipper", [{
     }
 ]);
 
-setting.setCommand("afsettings").setSize(600, 200);
-Setting.register(setting);
+flipsetting.setCommand("afsettings").setSize(600, 200);
+Setting.register(flipsetting);
 
 
 i = 0;
@@ -91,58 +75,46 @@ auctions = null;
 prev_i = []
 found = 0
 
-register("renderOverlay", myRenderOverlay);
-
-function myRenderOverlay() {
-    if (setting.gui.isOpen() && setting.getSetting("Flip GUI", "Enabled") === true) {
-        try {
-            Renderer.drawString('&l&e Item: ' + auc.name, Renderer.screen.getWidth() / 2 - 200, Renderer.screen.getHeight() / 2 - 65);
-            Renderer.drawString('&l&e Price: $' + numberWithCommas(auc.price), Renderer.screen.getWidth() / 2 - 200, Renderer.screen.getHeight() / 2 - 55);
-            Renderer.drawString('&l&e Value: $' + numberWithCommas(auc.average_price), Renderer.screen.getWidth() / 2 - 200, Renderer.screen.getHeight() / 2 - 45);
-        } catch (e) {}
-    }
-}
-
 register("tick", ticker);
 
 function Chatmsg(auc, isaf) {
   auc.name = (auc.name).replace(new RegExp("~", "g"), '&6✪')
-  if (auc.rarity == 'VERY_SPECIAL') {
+  if (auc.name.split('VERY_SPECIAL')[1] == 'VERY_SPECIAL') {
     auc.name = '&c'+ auc.name.split('VERY_SPECIAL')[0]
     auc.rarity = '&c&l' + auc.rarity
     auc.rarformat = '&c&l'
   }
-  if (auc.rarity == 'SPECIAL') {
+  if (auc.name.split('SPECIAL')[1] == 'SPECIAL') {
     auc.name = '&c'+ auc.name.split('SPECIAL')[0]
     auc.rarity = '&c&l' + auc.rarity
     auc.rarformat = '&c&l'
   }
-  if (auc.rarity == 'MYTHIC') {
+  if (auc.name.split('MYTHIC')[1] == 'MYTHIC') {
     auc.name = '&d'+ auc.name.split('MYTHIC')[0]
     auc.rarity = '&d&l' + auc.rarity
     auc.rarformat = '&d&l'
   }
-  if (auc.rarity == 'LEGENDARY') {
+  if (auc.name.split('LEGENDARY')[1] == 'LEGENDARY') {
     auc.name = '&6'+ auc.name.split('LEGENDARY')[0]
     auc.rarity = '&6&l' + auc.rarity
     auc.rarformat = '&6&l'
   }
-  if (auc.rarity == 'EPIC') {
+  if (auc.name.split('EPIC')[1] == 'EPIC') {
     auc.name = '&5'+ auc.name.split('EPIC')[0]
     auc.rarity = '&5&l' + auc.rarity
     auc.rarformat = '&5&l'
   }
-  if (auc.rarity == 'RARE') {
+  if (auc.name.split('RARE')[1] == 'RARE') {
     auc.name = '&9'+ auc.name.split('RARE')[0]
     auc.rarity = '&9&l' + auc.rarity
     auc.rarformat = '&9&l'
   }
-  if (auc.rarity == 'UNCOMMON') {
+  if (auc.name.split('UNCOMMON')[1] == 'UNCOMMON') {
     auc.name = '&2'+ auc.name.split('UNCOMMON')[0]
     auc.rarity = '&2&l' + auc.rarity
     auc.rarformat = '&2&l'
   }
-  if (auc.rarity == 'COMMON') {
+  if (auc.name.split('COMMON')[1] == 'COMMON') {
     auc.name = '&f'+ auc.name.split('COMMON')[0]
     auc.rarity = '&f&l' + auc.rarity
     auc.rarformat = '&f&l'
@@ -216,7 +188,7 @@ if (isaf == false) {
   ).setChatLineId(5052)
   .chat();
 
-  if (setting.getSetting("Settings", "Flip Warning") == true) {
+  if (flipsetting.getSetting("Settings", "Flip Warning:") == true) {
     Client.showTitle('§lNew Auction', `§l§f${auc.name}`, 10, 10, 10)
     World.playSound('mob.irongolem.hit', 100, 10)
   }
@@ -243,15 +215,15 @@ new Message(
 function ticker() {
 
     rr = 600
-    if (parseInt(setting.getSetting("Settings", "Refresh Rate")) > 100) {
-        rr = parseInt(setting.getSetting("Settings", "Refresh Rate"))
+    if (parseInt(flipsetting.getSetting("Settings", "Refresh Rate")) > 100) {
+        rr = parseInt(flipsetting.getSetting("Settings", "Refresh Rate"))
     }
     i++;
-    if (i > rr && setting.getSetting("Settings", "Enable Mod") === true) {
+    if (i > rr && flipsetting.getSetting("Settings", "Enable Mod") === true) {
         i = 0;
         exclusionsettings = 'false'
         request({
-            url: `https://auction-destroyer.herokuapp.com/${setting.getSetting("Extras", "Key: (Don't touch this!)")}?Fmin=${setting.getSetting("Settings", "Flip Minimum")}&Fmax=${setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")}&exclusions=${exclusionsettings}`,
+            url: `https://auction-destroyer.herokuapp.com/${flipsetting.getSetting("Extras", "Key: (Don't touch this!)")}`,
             json: true,
             connectTimeout: 1000,
         }).then(function(response) {
@@ -268,16 +240,11 @@ function ticker() {
                   ChatLib.clearChat(5052);
                   ChatLib.clearChat(5053);
                 } catch (e) {}
-              //  ChatLib.chat(((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').join(' ').replace(/[^0-9A-Z]+/gi, '')))
-              //  if (!((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').join(' ').replace(/[^0-9A-Z]+/gi, '')) && !(auc.name.split('[')[1])) {
-              //    star = '✪'
-              //    auc.name = auc.name.replace(/[^0-9A-Z _]+/gi, '') + '&6&l' + star.repeat((auc.name.split(' ')[auc.name.split(' ').length - 2]).split('').length)
-              //  }
-                //make pet text in white
-Chatmsg(auc, false)
+auctionRoute()
 
 
             } catch (e) {
+              new Message(new TextComponent(`No Auction Flips Found`).setHover("show_text", e)).chat()
             }
         });
     }
@@ -293,18 +260,29 @@ function auctionRoute() {
         it_no = 0
       }
         auc = auctions[it_no];
-        if ((auc.average_price - auc.price) < setting.getSetting("Settings", "Flip Minimum")) {
+        if ((auc.average_price - auc.price) < deFormat((flipsetting.getSetting("Settings", "Flip Minimum:")).toUpperCase())) {
           return auctionRoute()
         }
-        if (auc.price > setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")) {
+        if (flipsetting.getSetting("Settings", "Item Price Maximum:") == false) {
+        if (!(flipsetting.getSetting("Settings", "Item Price Maximum:") == 'Max')) {
+        if (auc.price > deFormat((flipsetting.getSetting("Settings", "Item Price Maximum:")).toUpperCase())) {
           return auctionRoute()
         }
-        if (setting.getSetting("Settings", "Profit > Price Only:") == true) {
+      }
+    }else {
+      coins = ChatLib.removeFormatting(Scoreboard.getLines()[3])
+      if(coins.includes("Purse:")) {
+        if (coins.match(/\d/g).join("") < auc.price) {
+        return auctionRoute()
+      }
+      }
+    }
+        if (flipsetting.getSetting("Settings", "Profit > Price Only:") == true) {
           if ((auc.average_price - auc.price) < auc.price) {
           return auctionRoute()
         }
         }
-        if (setting.getSetting("Exclusions", "Exclude Recombobulated:") == true && auc.extra.rarity_upgrades == 1) {
+        if (flipsetting.getSetting("Exclusions", "Exclude Recombobulated:") == true && auc.extra.rarity_upgrades == 1) {
           return auctionRoute()
         }
         if (auc.name) {
@@ -317,7 +295,7 @@ function auctionRoute() {
 Chatmsg(auc, true)
         }
     } catch (e) {
-        ChatLib.chat('No Auction Flips Found');
+      new Message(new TextComponent(`No Auction Flips Found`).setHover("show_text", e)).chat()
     }
 }
 register("command", auctionRoutep).setName("afp");
@@ -329,18 +307,20 @@ function auctionRoutep() {
         it_no = auctions.length
       }
         auc = auctions[it_no];
-        if ((auc.average_price - auc.price) < setting.getSetting("Settings", "Flip Minimum")) {
+        if ((auc.average_price - auc.price) < deFormat((flipsetting.getSetting("Settings", "Flip Minimum:")).toUpperCase())) {
           return auctionRoutep()
         }
-        if (auc.price > setting.getSetting("Settings", "Item price maximum (don't change if you don't want a cap on price)")) {
+        if (!(flipsetting.getSetting("Settings", "Item Price Maximum:") == 'Max')) {
+        if (auc.price > deFormat((flipsetting.getSetting("Settings", "Item Price Maximum:")).toUpperCase())) {
           return auctionRoutep()
         }
-        if (setting.getSetting("Settings", "Profit > Price Only:") == true) {
+      }
+        if (flipsetting.getSetting("Settings", "Profit > Price Only:") == true) {
           if ((auc.average_price - auc.price) < auc.price) {
           return auctionRoutep()
         }
       }
-        if (setting.getSetting("Exclusions", "Exclude Recombobulated:") == true && auc.extra.rarity_upgrades == 1) {
+        if (flipsetting.getSetting("Exclusions", "Exclude Recombobulated:") == true && auc.extra.rarity_upgrades == 1) {
           return auctionRoutep()
         }
 
@@ -354,7 +334,7 @@ function auctionRoutep() {
   Chatmsg(auc, true)
         }
     } catch (e) {
-        ChatLib.chat('No Auction Flips Found');
+        new Message(new TextComponent(`No Auction Flips Found`).setHover("show_text", e)).chat()
     }
 }
 
@@ -372,7 +352,15 @@ var emojiStringToArray = function (str) {
   }
   return arr;
 };
-
+const deFormat = s => {
+  const letters = "KMBT";
+  const base = letters.indexOf(s[s.length - 1]);
+  if (base === -1) {
+    return parseFloat(s);
+  }
+  const multiplier = Math.pow(1000, base + 1); // eslint-disable-line no-restricted-properties
+  return parseFloat(s.slice(0, -1)) * multiplier;
+};
 function nFormatter(num, digits) {
   const lookup = [
     { value: 1, symbol: "" },
@@ -422,3 +410,15 @@ function riskCalc(val, price) {
   }
   return `&f&lRISK METER: \n${risk}\n&8This is meant as an indication of if the flip\n&8has risk of losing money.`
 }
+
+/*const g = new FlipGui();
+register("renderOverlay", () => {
+  if (g.gui.isOpen()) {
+    g.draw();
+  }
+});
+
+register("command", () => {
+  g.open();
+}).setName("gui");
+*/

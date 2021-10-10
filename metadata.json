@@ -2,7 +2,7 @@
   "name":"SkyblockAuctionFlipper",
   "author": "deandre#3930",
   "entry": "index.js",
-  "requires": ["SettingsManager", "requestV2"],
-  "version": "0.4.1",
+  "requires": ["SettingsManager", "requestV2", "Elementa"],
+  "version": "0.4.2",
   "description": "auction flipper for skyblock. /afsettings to enable/disable."
 }
