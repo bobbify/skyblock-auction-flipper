@@ -119,6 +119,7 @@ function Chatmsg(auc, isaf) {
     auc.rarity = '&f&l' + auc.rarity
     auc.rarformat = '&f&l'
   }
+  
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -156,53 +157,52 @@ function AdditionalInfo() {
 
   return addition + `\n\n&f&lEnchantments: \n&4&lCOMING SOON`
 }
-if(auc.amount > 1)  {
-  auc.name = auc.name + ' &f' + auc.amount + 'x'
+
+function profitColor()
+{
+	return ((profit) <= 999999)?"&f":"&b";
 }
+
+var profit = auc.average_price - auc.price;
+
                   new Message(
                     new TextComponent(
-                        `&l&f${auc.name}`
-      ).setHover("show_text", auc.name + '\n' + auc.lore),
+                        `&l&f${auc.name}:`
+      ).setClick("run_command",`/viewauction ${auc.seller}`).setHover("show_text", auc.name + '\n' + auc.lore),
                           new TextComponent(
-                              `| &6Profit: $${nFormatter(
-                (auc.average_price - auc.price),1
-              )} &f| &6Price: $${nFormatter(auc.price,1
-)}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${nFormatter(auc.average_price,1)} \n &r► &ePrice: &f$${nFormatter(auc.price,1)} \n &r► &eTax: &f&4-$${nFormatter(auc.price/100,1)} \n &r► &eProfit: &a$${nFormatter((auc.average_price - auc.price) - (auc.price/100),1)} \n\n&r&lAdditional Stats:${AdditionalInfo()}\n\n${riskCalc(auc.average_price, auc.price)}`)
+                              ` ${profitColor()} $${auc.price} -> $${auc.average_price} &r| &6Profit: $${nFormatter(
+                (profit),1
+              )}`).setClick("run_command",`/viewauction ${auc.seller}`).setHover("show_text", `&d&lFlip Stats:\n &r► &eCalculated Avg: &f$${nFormatter(auc.average_price,1)} \n &r► &ePrice: &f$${nFormatter(auc.price,1)} \n &r► &eTax: &f&4-$${nFormatter(auc.price/100,1)} \n &r► &eProfit: &a$${nFormatter((auc.average_price - auc.price) - (auc.price/100),1)} \n\n&r&lAdditional Stats: \n${AdditionalInfo()}\n\n${riskCalc(auc.average_price, auc.price)}`)
                       )
-                      .setChatLineId(5050)
+                      //.setChatLineId(5050)
                       .chat();
   new Message(
-          new TextComponent("&l&2[To Auction] ").setClick(
+          new TextComponent("&6&l[CLICK]                    ").setClick(
               "run_command",
               `/viewauction ${auc.seller}`
-          )
+          ).setHover("show_text", "&6&lCLICK ME")
       )
-      .setChatLineId(5051)
+      //.setChatLineId(5051)
       .chat();
-if (isaf == false) {
-  new Message(
-  new TextComponent("&l&4[Next] ").setClick(
-      "run_command",
-      `/af`
-  )
-  ).setChatLineId(5052)
-  .chat();
+  // new Message(
+          // new TextComponent("&6&l[CLICK]                    ").setClick(
+              // "run_command",
+              // `/viewauction ${auc.seller}`
+          // ).setHover("show_text", "&6&lCLICK ME")
+      // )
+      // //.setChatLineId(5051)
+      // .chat();
 
-  if (flipsetting.getSetting("Settings", "Flip Warning:") == true) {
-    Client.showTitle('§lNew Auction', `§l§f${auc.name}`, 10, 10, 10)
-    World.playSound('mob.irongolem.hit', 100, 10)
-  }
-}
 if (isaf === true) {
 new Message(
-new TextComponent("&l&4[Next] ").setClick(
+new TextComponent("&4&l[NEXT] ").setClick(
     "run_command",
     `/af`
 )
 ).setChatLineId(5052)
 .chat();
 new Message(
-    new TextComponent("&l&4[Prev] ").setClick(
+    new TextComponent("&4&l[PREV] ").setClick(
         "run_command",
         `/afp`
     )
@@ -210,7 +210,9 @@ new Message(
 .setChatLineId(5053)
 .chat();
 }
-
+  it_no = Math.floor(Math.random() * auctions.length);
+  it_roll++
+  found = 0
 }
 function ticker() {
 
@@ -417,7 +419,6 @@ register("renderOverlay", () => {
     g.draw();
   }
 });
-
 register("command", () => {
   g.open();
 }).setName("gui");
