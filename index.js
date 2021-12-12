@@ -55,12 +55,6 @@ var flipsetting = new SettingsObject("SkyblockAuctionFlipper", [{
             new Setting.Button("", "", () => {}),
 
         ]
-    },
-    {
-        name: "Extras",
-        settings: [
-            new Setting.TextInput("Key: (Don't touch this!)", "Ldp9xUHrMi"),
-        ]
     }
 ]);
 
@@ -225,7 +219,7 @@ function ticker() {
         i = 0;
         exclusionsettings = 'false'
         request({
-            url: `https://auction-destroyer.herokuapp.com/${flipsetting.getSetting("Extras", "Key: (Don't touch this!)")}`,
+            url: `https://auction-destroyer.herokuapp.com/Ldp9xUHrMi}`,
             json: true,
             connectTimeout: 1000,
         }).then(function(response) {
